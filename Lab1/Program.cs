@@ -1,50 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Channels;
 
 
 namespace Lab1
 {
+	class MyClass
+	{
+		public static int Number { get; set; }
 
+	}
 	class Program
 	{
-		public static int c = 0;
-
-		static int cond(int x, int y)
-		{
-			c++;
-			if (x > y)
-				return 1;
-			else if (x == y)
-				return 0;
-			else return -1;
-		}
-
 		static void Main(string[] args)
 		{
-			int max = 1000000;
-			int min = 0;
-			long t = 0;
+			NumbersSequenceInt sequence = new NumbersSequenceInt(1000, 0, 100000);
+			sequence.CreateIncreasingSequence();
 
-			NumbersSequenceInt sequence;
-			List<int> list = new List<int>();
-			Stopwatch sw = new Stopwatch();
-
-			for (int i = 5000; i <= 50000; i+=5000)
+			for (int i = 1000; i <= 512000; i*=2)
 			{
-				c = 0;
-				sequence = new NumbersSequenceInt(i, min, max);
-				sequence.CreateSawtoothSequence(100);
-				sw.Start();
-				Array.Sort<int>(sequence.Sequence,cond);
-				sw.Stop();
-				t = sw.ElapsedMilliseconds;
-				Console.WriteLine($"N = {i}, Время сортировки = {t} Кол-во сравнений = {c}");
-				Console.WriteLine("-------------");
-				sw.Reset();
+				int z = 0;
+				for (int k = 0; k < 100; k++)
+				{
+					int rand = new Random().Next(0, 100000);
+					new NumbersSequenceInt(i, -1000000, 1000000);
+					sequence.CreateIncreasingSequence();
+					//for (int j = 0; j < i; j++)
+					//{
+					//	if (sequence.Sequence[j] >= rand)
+					//	{
+					//		sequence.Sequence[j] = rand;
+					//		break;
+					//	}
+					//}
+
+					FindAlgorithms.JumpFindOneLevel(sequence.Sequence, rand);
+					z += FindAlgorithms.Count;
+				}
+
+				Console.WriteLine("i - " + i);
+				Console.WriteLine("Среднее кол-во сравнений - " + z / 10);
 			}
 
+			//foreach (var VARIABLE in sequence.Sequence)
+			//{
+			//	Console.WriteLine(VARIABLE);
+			//}
 
+			//Console.WriteLine(FindAlgorithms.InterpolationFind(sequence.Sequence, 50000));
+			//Console.WriteLine("Кол-во сравнений - " + FindAlgorithms.Count);
 		}
 	}
 }

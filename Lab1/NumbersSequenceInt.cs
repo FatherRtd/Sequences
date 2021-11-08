@@ -141,5 +141,16 @@ namespace Lab1
 			sw.Stop();
 			GenerationTime = sw.ElapsedMilliseconds;
 		}
+
+		public int LinearFind(int min,int max,int key)
+		{
+			for (int i = min; i <= max; i++)
+			{
+				if (Sequence[i] == key)
+					return Sequence[i];
+			}
+
+			return default;
+		}
 	}
 }
