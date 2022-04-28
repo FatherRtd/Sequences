@@ -2,54 +2,41 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Channels;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
 
 
 namespace Lab1
 {
-	class MyClass
+	public class Benchmark
 	{
-		public static int Number { get; set; }
+		private SortingAlgorithms sortingAlgorithms = new SortingAlgorithms();
+		private NumbersSequenceInt sequence = new NumbersSequenceInt(10000, -100000, 100000);
 
+		[Benchmark]
+		public void MSDSort()
+		{
+			sortingAlgorithms.MSDSort(sequence.Sequence);
+		}
+
+		[Benchmark]
+		public void PyramidalSort()
+		{
+			sortingAlgorithms.PyramidalSort(sequence.Sequence, (i, j) => i > j);
+		}
+
+		[Benchmark]
+		public void BubbleSort()
+		{
+			sortingAlgorithms.LastIndexBubbleSort(sequence.Sequence, (i, j) => i > j);
+		}
 	}
+
 	class Program
 	{
 		static void Main(string[] args)
 		{
-			NumbersSequenceInt sequence = new NumbersSequenceInt(1000, 0, 100000);
-			sequence.CreateIncreasingSequence();
-
-			for (int i = 1000; i <= 512000; i*=2)
-			{
-				int z = 0;
-				for (int k = 0; k < 100; k++)
-				{
-					int rand = new Random().Next(0, 100000);
-					new NumbersSequenceInt(i, -1000000, 1000000);
-					sequence.CreateIncreasingSequence();
-					//for (int j = 0; j < i; j++)
-					//{
-					//	if (sequence.Sequence[j] >= rand)
-					//	{
-					//		sequence.Sequence[j] = rand;
-					//		break;
-					//	}
-					//}
-
-					FindAlgorithms.JumpFindOneLevel(sequence.Sequence, rand);
-					z += FindAlgorithms.Count;
-				}
-
-				Console.WriteLine("i - " + i);
-				Console.WriteLine("Среднее кол-во сравнений - " + z / 10);
-			}
-
-			//foreach (var VARIABLE in sequence.Sequence)
-			//{
-			//	Console.WriteLine(VARIABLE);
-			//}
-
-			//Console.WriteLine(FindAlgorithms.InterpolationFind(sequence.Sequence, 50000));
-			//Console.WriteLine("Кол-во сравнений - " + FindAlgorithms.Count);
+			BenchmarkRunner.Run<Benchmark>();
 		}
 	}
 }
